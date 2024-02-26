@@ -1,0 +1,275 @@
+
+#include<iostream>
+#include<cassert>
+using namespace std;
+
+
+
+template<class T>
+class Node
+{
+public:
+	T data;
+	Node<T>* next;
+	Node<T>* prev;
+
+	Node(T data)
+	{
+		this->data = data;
+		next = NULL;
+		prev = NULL;
+	}
+
+};
+
+template<class T>
+class DoubleLinkedList
+{
+	Node<T>* head;
+	Node<T>* tail;
+
+public:
+
+	DoubleLinkedList()
+	{
+		head = NULL;
+		tail = NULL;	
+	}
+
+	void Add_Back(const T item)
+	{
+		Add_Back(new Node<T>(item));
+	}
+
+	void Add_Back(Node<T>* item)
+	{
+		if (head == NULL)
+		{
+			head = item;
+			tail = item;
+			return;
+		}
+
+		tail->next = item;
+		item->prev = tail;
+		tail=item;
+
+	}
+
+	void Add_Front(const T item)
+	{
+		Add_Front(new Node<T>(item));
+	}
+
+	void Add_Front(Node<T>* item)
+	{
+		if (head == NULL)
+		{
+			head = item;
+			tail = item;
+			return;
+		}
+
+		head->prev = item;
+		item->next = head;
+		head = item;
+	}
+
+	T Pop_Front()
+	{
+		if (head == NULL) assert(!"there is no element");
+
+		if (head->next == NULL)
+		{
+			T temp = head->data;
+			delete head;
+			head = NULL;
+			return temp;
+		}
+
+		T element = head->data;
+		Node<T>* temp = head->next;
+		delete head;
+		head = temp;
+		head->prev = NULL;
+		return element;
+	}
+
+	T Pop_Back()
+	{
+		if (head == NULL) assert(!"there is no element");
+
+		if (head->next == NULL)
+		{
+			T temp = head->data;
+			delete head;
+			head = NULL;
+			return temp;
+		}
+
+		T element = tail->data;
+		Node<T>* temp = tail->prev;
+		delete tail;
+		tail = temp;
+		tail->next = NULL;
+		return element;
+		
+	}
+
+	void Print_Back()
+	{
+		cout << "[";
+		Node<T>* temp = tail;
+		while (temp->prev != NULL)
+		{
+			cout << temp->data << ", ";
+			temp = temp->prev;
+		}
+
+		cout << temp->data << "]";
+	}
+
+	void Print_Front()
+	{
+		cout << "[";
+		Node<T>* temp = head;
+		while (temp->next != NULL)
+		{
+			cout << temp->data << ", ";
+			temp = temp->next;
+		}
+
+		cout << temp->data << "]";
+	}
+
+	void addBefore(const T x, const T item)
+	{
+		if (head->next == NULL)
+			assert(!"node is empty");
+
+		if (head->next == NULL)
+		{
+			if (head->data == x)
+			{
+				Add_Front(item);
+				return;
+			}
+			else
+				assert(!"element not found");
+
+		}
+
+		Node<T>* temp = head;
+		while (temp->data != x)
+			temp = temp->next;
+
+		Node<T>* temp_before = temp->prev;
+		Node<T>* newItem = new Node<T>(item);
+		temp_before->next = newItem;
+		newItem->prev = temp_before;
+		newItem->next = temp;
+		temp->prev = newItem;
+	}
+
+	void addAfter(const T x, const T item)
+	{
+		if (head->next == NULL)
+			assert(!"node is empty");
+
+		if (head->next == NULL)
+		{
+			if (head->data == x)
+			{
+				Add_Back(item);
+				return;
+			}
+			else
+				assert(!"element not found");
+
+		}
+
+		Node<T>* temp = head;
+		while (temp->data != x)
+			temp = temp->next;
+
+		Node<T>* newItem = new Node<T>(item);
+		Node<T>* temp_after = temp->next;
+		temp->next = newItem;
+		newItem->prev = temp;
+		newItem->next = temp_after;
+		temp_after->prev = newItem;
+
+	}
+
+	void deleteItem(const int item)
+	{
+		if (head == NULL)
+			assert(!"list is empty");
+
+		if (head->next == NULL)
+		{
+			if (head->data == item)
+			{
+				Pop_Back();
+				return;
+			}
+			else
+				assert(!"element not found");
+		}
+
+		if (head->data == item)
+		{
+			Pop_Front();
+			return;
+		}
+
+		if (tail->data == item)
+		{
+			Pop_Back();
+			return;
+		}
+
+		Node<T>* temp = head;
+		while (temp->data != item)
+			temp = temp->next;
+
+		Node<T>* temp_before = temp->prev;
+		Node<T>* temp_after = temp->next;
+
+		temp_before->next = temp_after;
+		temp_after->prev = temp_before;
+		delete temp;
+		temp = NULL;
+	}
+
+
+};
+
+
+
+
+
+int main()
+{
+	DoubleLinkedList<int> dl;
+
+	dl.Add_Back(12);
+	dl.Add_Front(15);
+	dl.Add_Front(20);
+	dl.Add_Back(30);
+
+	//dl.Print_Front();
+	//dl.Print_Front();
+	//cout << endl << endl;
+	//dl.Print_Back();
+
+	//dl.Pop_Back();
+	//dl.Pop_Front();
+
+	//dl.addAfter(15, 7);
+	//dl.addBefore(15, 8);
+	dl.deleteItem(30);
+	dl.Print_Front();
+
+
+}

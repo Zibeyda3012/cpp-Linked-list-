@@ -1,0 +1,253 @@
+
+#include<iostream>
+#include<cassert>
+using namespace std;
+
+template<class T>
+class Node
+{
+public:
+	T _data;
+	Node<T>* next;
+
+	Node(T data )
+	{
+		_data = data;
+		next = NULL;
+	}
+
+};
+
+template<class T>
+class Simple_Linked_List
+{
+	Node<T>* head;
+
+public:
+	Simple_Linked_List()
+	{
+		head = NULL;
+	}
+
+
+	// add_front
+	// add_back
+	// pop_back
+	// pop_front
+	// Print
+
+
+	void Add_front(Node<T>* item)
+	{
+		if (head == NULL)
+		{
+			head = item;
+			return;
+		}
+
+		Node<T>* temp = head;
+		head = item;
+		head->next = temp;
+		temp = NULL;
+
+	}
+
+	void Add_front(const T item)
+	{
+		Node<T>* new_item = new Node<T>(item);
+		Add_front(new_item);
+	}
+
+	void Add_Back(Node<T>* item)
+	{
+		if (head == NULL)
+		{
+			head = item;
+			return;
+		}
+
+		Node<T>* enditem = head;
+		while (enditem->next != NULL)
+			enditem = enditem->next;
+
+		enditem->next = item;
+	}
+
+	void Add_Back(const T item)
+	{
+		Node<T>* new_item = new Node<T>(item);
+		Add_Back(new_item);
+	}
+
+	T Pop_Back()
+	{
+		if (head == NULL) assert(!"node is empty");
+
+		if (head->next == NULL)
+		{
+			T temp = head->_data;
+			delete head;
+			head = NULL;
+			return temp;
+		}
+
+		Node<T>* end_item = head;
+		while (end_item->next->next != NULL)
+			end_item = end_item->next;
+
+		T temp = end_item->next->_data;
+		delete end_item->next;
+		end_item->next = NULL;
+		return temp;
+
+		
+	}
+
+	T Pop_Front()
+	{
+		if (head == NULL) assert(!"node is empty");
+
+		if (head->next == NULL)
+		{
+			T temp = head->_data;
+			delete head;
+			head = NULL;
+			return temp;
+		}
+
+		Node<T>* front_item = head->next;
+		T temp = head->_data;
+		delete head;
+		head = front_item;
+		return temp;
+		
+	}
+
+	void addBefore(const T x, const T item)
+	{
+		if (head == NULL) assert(!"node is empty");
+
+		if(head->next==NULL)
+		{
+			if (head->_data == x)
+			{
+				Add_front(item);
+				return;
+			}
+			else
+				assert(!"element not found");
+		}
+
+		Node<T>* element = head;
+		Node<T>* temp = NULL;
+		while (element->_data != x)
+		{
+			temp = element;
+			element = element->next;
+		}
+
+		Node<T>* newItem = new Node<T>(item);
+
+		temp->next = newItem;
+		newItem->next = element;
+
+	}
+
+	void addAfter(const T x, const T item)
+	{
+		if (head == NULL) assert(!"node is empty");
+
+		if (head->next == NULL)
+		{
+			if (head->_data == x)
+			{
+				Add_Back(item);
+				return;
+			}
+			else
+				cout<<(!"element not found");
+		}
+			
+		Node<T>* element = head;
+		while (element->_data != x)
+			element = element->next;
+	
+		Node<T>* temp = element->next;
+
+		Node<T>* newitem = new Node<T>(item);
+		element->next = newitem;
+		newitem->next = temp;
+
+	}
+
+
+	void deleteItem(const T item)
+	{
+		if (head == NULL) assert(!"node is empty");
+		if (head->next == NULL)
+		{
+			if (head->_data == item)
+			{
+				Pop_Back();
+				return;
+			}
+			else
+				assert(!"element not found");
+		}
+
+		if (head->_data == item)
+		{
+			Pop_Front();
+			return;
+		}
+
+		Node<T>* element = head;
+		Node<T>* temp = NULL;
+		while (element->_data != item)
+		{
+			temp = element;
+			element = element->next;
+		}
+
+		Node<T>* nextElement = element->next;
+		temp->next = nextElement;
+		delete element;
+		element = NULL;
+
+	}
+
+	void print()
+	{
+		if (head == NULL)
+			cout << "[]";
+
+		else
+		{
+			cout << "[";
+			Node<T>* temp = head;
+			while (temp->next != NULL)
+			{
+				cout << temp->_data << ", ";
+				temp = temp->next;
+			}
+			cout << temp->_data << "]";
+		}
+	}
+};
+
+
+
+int main()
+{
+	Simple_Linked_List<int> l;
+	l.Add_Back(15);
+	l.Add_Back(12);
+	l.Add_front(7);
+	l.print();
+	cout << endl;
+	//l.addAfter(7, 8);
+	//l.Pop_Back();
+	//l.addBefore(12, 20);
+	l.deleteItem(15);
+	l.print();
+}
